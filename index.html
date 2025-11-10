@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>حاسبة مؤشر كتلة الجسم (BMI)</title>
+
+  <!-- أيقونة في التبويب -->
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3944/3944338.png">
+
+  <style>
+    body {
+      font-family: "Tajawal", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef3ff, #dbe7ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 360px;
+      text-align: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .logo img {
+      width: 50px;
+      height: 50px;
+      margin-left: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #2b4eff;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      width: 94%;
+      padding: 10px;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      font-size: 16px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #2b4eff;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      width: 100%;
+      background-color: #2b4eff;
+      color: white;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #1d35b4;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/3944/3944338.png" alt="logo">
+      <h1>حاسبة مؤشر كتلة الجسم</h1>
+    </div>
+
+    <label>الوزن (كجم)</label>
+    <input type="number" id="w" step="0.1" placeholder="أدخل وزنك">
+
+    <label>الطول (متر)</label>
+    <input type="number" id="h" step="0.01" placeholder="أدخل طولك">
+
+    <button onclick="calculate()">احسب</button>
+
+    <h3 id="result"></h3>
+
+    <div class="footer">© 2025 - FastAPI BMI Calculator</div>
+  </div>
+
+  <script>
+    async function calculate() {
+      const w = document.getElementById('w').value;
+      const h = document.getElementById('h').value;
+      const result = document.getElementById('result');
+
+      if (!w || !h) {
+        result.style.color = "red";
+        result.innerText = "الرجاء إدخال الوزن والطول أولاً";
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/calculate_bmi?w=${w}&h=${h}`);
+        const data = await res.json();
+        result.style.color = "#1d35b4";
+        result.innerText = `BMI = ${data.bmi.toFixed(2)} → ${data.message}`;
+      } catch (error) {
+        result.style.color = "red";
+        result.innerText = "حدث خطأ أثناء الاتصال بالخادم";
+      }
+    }
+  </script>
+</body>
+</html>
